@@ -7,7 +7,10 @@
     format:    .asciz "Valor de heapStart: %p\n"
 
 .section .text
-.global start
+.global setup_brk
+.global dismiss_brk
+.global memory_alloc
+
 setup_brk:
     movq $12, %rax           # 12 em rax é o código do brk
     movq $0, %rdi            # nao faz nada na heap, só indica o endereço atual
