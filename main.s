@@ -8,7 +8,7 @@
 
 .section .text
 .global start
-_setup_brk:
+setup_brk:
     movq $12, %rax           # 12 em rax é o código do brk
     movq $0, %rdi            # nao faz nada na heap, só indica o endereço atual
     syscall
@@ -22,13 +22,13 @@ _setup_brk:
     
     # movq $60, %rax         
     # syscall
-_dismiss_brk:
+dismiss_brk:
     movq $12, %rax          # 12 em rax é o código do brk
     movq heapStart, %rdi
     syscall
     ret
 
-_memory_alloc:
+memory_alloc:
     movq %rdi, %rbx         # parametro no rbx
     movq heapStart, %rcx    # heapStart no rcx, rcx = heapStart
     movq $12, %rax          # rax esta com valor atual do brk
