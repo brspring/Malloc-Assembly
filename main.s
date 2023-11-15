@@ -71,6 +71,7 @@ memory_alloc:
           movq %rbx, (%r12) # coloca o tamanho do novo bloco
           addq $8, %r12 # r12 tem o endereço do começo do bloco
           movq %r12, %rax # oo endereço do começo  do novo bloco é movido no rax p retornar
+          ret
 
     # loop que procura a primeira os 8bytes que indicam uma posicao livre
     # se achar, verifica os segundos 8bytes para ver se tem espaco suficiente
