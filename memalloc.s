@@ -3,8 +3,8 @@
 # ld malloc.o -o imprime -dynamic-linker /lib/x86_64-linux-gnu/ld-linux-x86-64.so.2 -lc -e main
 
 .section .data
-    heapStart: .quad 0 
-    format:    .asciz "Valor de heapStart: %p\n"
+    original_brk: .quad 0 
+    format:    .asciz "Valor de original_brk: %p\n"
 
 .section .text
 .global setup_brk
@@ -16,24 +16,24 @@ setup_brk:
     movq $0, %rdi            # nao faz nada na heap, só indica o endereço atual
     syscall
 
-    movq %rax, heapStart
+    movq %rax, original_brk
     ret
 
     # movq $format, %rdi  # Configura o primeiro argumento para printf (formato da string)
-    # movq heapStart, %rsi
+    # movq original_brk, %rsi
     # call printf
     
     # movq $60, %rax         
     # syscall
 dismiss_brk:
     movq $12, %rax          # 12 em rax é o código do brk
-    movq heapStart, %rdi
+    movq original_brk, %rdi
     syscall
     ret
 
 memory_alloc:
     movq %rdi, %rbx         # parametro no rbx
-    movq heapStart, %r12    # heapStart no r12, r12 = heapStart
+    movq original_brk, %r12    # original_brk no r12, r12 = original_brk
     movq $12, %rax          # rax esta com valor atual do brk
     movq $0, %rdi
     syscall
@@ -61,7 +61,7 @@ memory_alloc:
                 addq $8, %r12       # vai para o proximo bloco
                 jmp _loop_start
         _tudo_ocupado:
-          movq %r12, %rdi    # coloca em rdi o valor de r12, que é o valor atual da heapstart
+          movq %r12, %rdi    # coloca em rdi o valor de r12, que é o valor atual da original_brk
           addq $16, %rdi     
           addq %rbx, %rdi # rdi recebe o valor novo do brk
           movq $12, %rax
