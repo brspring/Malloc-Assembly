@@ -63,12 +63,12 @@ memory_alloc:
             subq %rbx, %r9 # r9 = bloco disponível - tamanho pedido
             cmpq $16, %r9 
             jle _substituiBloco
-            addq $24, %r12 # +8 para ir pro começo do bloco pedido, + 16 para alocar a parte gerencial do bloco extra
+            addq $8, %r12 # +8 para ir pro começo do bloco pedido
             addq %rbx, %r12 # + tamanho do bloco pedido pra chegar no fim do bloco pedido/começo do extra
-            subq $8, %r12 # end. que tem o tamanho do bloco extra
-            movq %r9, (%r12) # coloca o tamanho do bloco extra
-            subq $8, %r12 # vai para o tamanho do bloco extra
             movq $0, (%r12) # coloca 0 para dizer que o bloco extra está livre
+            addq $8, %r12 # vai para o tamanho do bloco extra
+            subq $16, %r9
+            movq %r9, (%r12) # coloca o tamanho do bloco extra
             subq %rbx, %r12 # volta a qntd de bytes igual ao tamanho do bloco pedido
             subq $16, %r12 # volta para o começo do bloco pedido 
             _substituiBloco: 
