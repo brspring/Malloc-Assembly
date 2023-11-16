@@ -45,17 +45,39 @@ memory_alloc:
         addq $8, %r12           # soma 8 no r12 pra ir pro tamanho do bloco           
         addq (%r12), %r12       # soma o tamanho do bloco no r12 para ir para  o fim do bloco menos 8 bytes
         addq $8, %r12           # vai para o inicio do proximo bloco
+        movq %r12, %r9
+        addq $16, %r9
+        cmpq %r9, %rax
+        jle _pulaBrk
         jmp _loop_start
+        _pulaBrk:
+            movq %rax, %r12
+            jmp _loop_start
+        # talvez perguntar se  r12 + 16 = brk, ent r12 = r12 + 16 e mudar primeiro condicional para menor igual
+        
         _livre:
             addq $8, %r12           # soma 8 no r12 pra ir pro tamanho do bloco 
             cmpq (%r12), %rbx   # compara o tamanho do bloco atual com o tamanho pedido
             jg _proximo_bloco   # se o tamanho do bloco atual for menor que o tamanho pedido, vai para o proximo bloco
-            movq %rbx, (%r12)   # coloca o tamanho novo no segundo quadradinho
-            subq $8, %r12       # vai para o inicio do bloco 
-            movq $1, (%r12)     # diz que ta ocupado
-            movq %r12, %rax     
-            addq $16, %rax      # retorna o começo do bloco  de dados
-            ret
+            movq (%r12), %r9 
+            subq %rbx, %r9 # r9 = bloco disponível - tamanho pedido
+            cmpq $16, %r9 
+            jle _substituiBloco
+            addq $24, %r12 # +8 para ir pro começo do bloco pedido, + 16 para alocar a parte gerencial do bloco extra
+            addq %rbx, %r12 # + tamanho do bloco pedido pra chegar no fim do bloco pedido/começo do extra
+            subq $8, %r12 # end. que tem o tamanho do bloco extra
+            movq %r9, (%r12) # coloca o tamanho do bloco extra
+            subq $8, %r12 # vai para o tamanho do bloco extra
+            movq $0, (%r12) # coloca 0 para dizer que o bloco extra está livre
+            subq %rbx, %r12 # volta a qntd de bytes igual ao tamanho do bloco pedido
+            subq $16, %r12 # volta para o começo do bloco pedido 
+            _substituiBloco: 
+                movq %rbx, (%r12)   # coloca o tamanho novo no segundo quadradinho
+                subq $8, %r12       # vai para o inicio do bloco 
+                movq $1, (%r12)     # diz que ta ocupado
+                movq %r12, %rax     
+                addq $16, %rax      # retorna o começo do bloco  de dados
+                ret
             _proximo_bloco:
                 addq (%r12), %r12   # vai para o proximo bloco
                 addq $8, %r12       # vai para o proximo bloco
