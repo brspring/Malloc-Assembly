@@ -8,6 +8,7 @@
 .global dismiss_brk
 .global memory_alloc
 .global original_brk
+.global memory_free
 
 setup_brk:
     movq $12, %rax           # 12 em rax é o código do brk
@@ -47,9 +48,9 @@ memory_alloc:
         jmp _loop_start
         _livre:
             addq $8, %r12           # soma 8 no r12 pra ir pro tamanho do bloco 
-            cmpq (%r12), %rdi   # compara o tamanho do bloco atual com o tamanho pedido
+            cmpq (%r12), %rbx   # compara o tamanho do bloco atual com o tamanho pedido
             jg _proximo_bloco   # se o tamanho do bloco atual for menor que o tamanho pedido, vai para o proximo bloco
-            movq %rdi, (%r12)   # coloca o tamanho novo no segundo quadradinho
+            movq %rbx, (%r12)   # coloca o tamanho novo no segundo quadradinho
             subq $8, %r12       # vai para o inicio do bloco 
             movq $1, (%r12)     # diz que ta ocupado
             movq %r12, %rax     
@@ -71,3 +72,22 @@ memory_alloc:
           addq $8, %r12 # r12 tem o endereço do começo do bloco
           movq %r12, %rax # oo endereço do começo  do novo bloco é movido no rax p retornar
           ret
+
+memory_free:
+    cmpq %rdi, original_brk 
+    jge _bloco_invalido # se o endereço original do brk for maior ou igual ao endereço passado, esse endereço não está alocado
+    movq %rdi, %rbx # move parametro para rbx pra usar rdi
+    movq $0, %rdi
+    movq $12, %rax
+    syscall # valor atual do brk em rax
+    cmpq %rax, %rbx # se o endereço passado for maior ou igual que o valor atual do brk, esse endereço não está alocado
+    jge _bloco_invalido
+    subq $16, %rbx # muda o endereço para a parte que diz se o bloco ta livre
+    cmpq $1, (%rbx)
+    jne _bloco_invalido # se o bloco não estiver ocupado, não pode ser liberado
+    movq $0, (%rbx) # coloca 0 para dizer que o bloco está livre
+    movq $1, %rax # liberação deu certo, retorna 1
+    ret
+    _bloco_invalido:
+        movq $0, %rax # liberação deu errado, retorna 0
+        ret
