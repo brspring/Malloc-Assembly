@@ -11,6 +11,9 @@ Gustavo Vinicius Paulino    --- GRR20220067
    Começamos a implementação fazendo as duas funções mais simples e intuitivas, que são: "setup_brk" e "dismiss_brk". Após isso a implementação da função principal a "memory_alloc" e por ultimo "memory_free".
 Onde alocamos um bloco de memória com  registro de informações gerenciais dos blocos de memória na heap. Esse registro é composto por duas quadwords (ou seja, tem 16 bytes), sendo que a primeira identifica se o bloco está sendo usado ou não (0 para livre e 1 para em uso); e a
 segunda indica o tamanho do bloco relacionado (quantidade de bytes) e o restante representa o bloco de dados em si. 
+
+![image](https://github.com/brspring/Malloc-Assembly-/assets/90077110/ceb6a1f7-baf8-42da-858a-8814d5f9796e)
+
 # Principais Funções
    
  ## setup_brk:
