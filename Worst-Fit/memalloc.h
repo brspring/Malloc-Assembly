@@ -5,3 +5,4 @@ void* memory_alloc(unsigned long int bytes);
 //2. Se encontrar, marca ocupação, utiliza os bytes necessários do bloco, retornando o endereço correspondente
 //3. Se não encontrar, abre espaço para um novo bloco
 int memory_free(void *pointer); //Marca um bloco ocupado como livre
+int t(){return 1;}
