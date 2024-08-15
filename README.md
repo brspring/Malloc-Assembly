@@ -1,6 +1,6 @@
 mais fácil de ser visualizado em: 
 
-# Implementação de um Sistema de Gerenciamento de Alocação Dinâmica de Memória
+# Comando Malloc feito em Assembly
 Participantes:
 
 Bruno Aziz Spring Machado   --- GRR20211279
