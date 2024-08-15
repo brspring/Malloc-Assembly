@@ -1,5 +1,3 @@
-mais fácil de ser visualizado em: 
-
 # Comando Malloc feito em Assembly
 Participantes:
 
